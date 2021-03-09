@@ -23,11 +23,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
 	"net"
+	"net/http"
 	"server/internal/consul"
 	pb "server/proto/helloworld"
 )
@@ -68,8 +70,29 @@ func (h *HealthImpl) Check(ctx context.Context, req *grpc_health_v1.HealthCheckR
 func (h *HealthImpl) Watch(req *grpc_health_v1.HealthCheckRequest, w grpc_health_v1.Health_WatchServer) error {
 	return nil
 }
+func pingFunc(w http.ResponseWriter, _ *http.Request) {
+	var data = map[string]interface{}{
+		"code": 1,
+		"msg":  "OK",
+		"data": map[string]interface{}{
+			"Msg":  "pong",
+			"Uuid": "",
+		},
+	}
+	l, _ := json.Marshal(data)
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(l)
+}
 
 func main() {
+	go func() {
+		mux := http.NewServeMux()
+		mux.HandleFunc("/ping", pingFunc)
+		err := http.ListenAndServe(":50003", mux)
+		if err != nil {
+			log.Fatalf("http server error %v", err)
+		}
+	}()
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

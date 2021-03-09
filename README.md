@@ -1,5 +1,9 @@
 # consul 注册发现用例
-
+## client consul客户端
+## server 服务端
+## dnsc 使用dns协议获取服务地址
+## todo
+实现http server 通过 dns调用http服务
 
 
 #部分代码来自:
