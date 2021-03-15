@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	srvName   = "helloworld.service.consul"
+	srvName   = "echoService.service.consul"
 	agentAddr = "127.0.0.1:8600"
 )
 
