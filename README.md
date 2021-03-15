@@ -1,29 +1,61 @@
 # consul 注册发现用例
-## client consul客户端
-## server 服务端
-## dnsc 使用dns协议获取服务地址
-## todo
-实现http server 通过 dns调用http服务
 
-启动consul
+## 文件结构
+
+```
+consul-demo/
+├── dnsc       // client 通过dns方式服务发现
+├── google     // grpc http options 编译依赖
+├── grpcClient //client
+├── grpcServer //server
+├── proto      //protobuff定义文件
+```
+
+## 使用
+
+### 编译ptotobuffer文件
+
+```
+cd grpcClient
+go gernerate ./...
+cd ../grpcServer
+go gernerate ./...
+```
+
+### 启动consul
+
+```
 consul agent -dev -client 0.0.0.0 -config-dir=/etc/consul.d
-启动server
+```
+
+### 启动server
+
+```
 cd grpcServer
 go run cmd/main.go
 go run 
-启动反向代理
-go run cmd/http_entrypoint.go
-请求:
+go run cmd/http_entrypoint.go  //grpc代理
+```
+
+访问
+
+```
 curl http://localhost:8081/echo/me
-curl -X POST http://localhost:8081/echo -H "Content-Type: application/json" -d'{"value": "foo"}'
-执行客户端
-go run cmd/main.go
-执行通过consul获取地址的客户端:
-go run cmd/main_consul_client.go
+```
 
 
-#部分代码来自:
-client server
-[janlely/consul-go-grpc-demo](https://github.com/janlely/consul-go-grpc-demo)
-dnsc
-[consul分布式服务注册和发现](https://blog.51cto.com/tianshili/1758566)
+
+### 启动client
+
+```
+cd grpcClient
+go run cmd/main.go //直接访问
+go run cmd/main_consul_client.go  //通过consul服务发现访问
+```
+
+## 参考
+
+实现fan别参考自:
+
+* server && client:  [janlely/consul-go-grpc-demo](https://github.com/janlely/consul-go-grpc-demo)
+* dnsc: [consul分布式服务注册和发现](https://blog.51cto.com/tianshili/1758566)
