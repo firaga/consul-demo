@@ -55,7 +55,7 @@ go run cmd/main_consul_client.go  //通过consul服务发现访问
 
 ## 参考
 
-实现fan别参考自:
+实现分别参考自:
 
 * server && client:  [janlely/consul-go-grpc-demo](https://github.com/janlely/consul-go-grpc-demo)
 * dnsc: [consul分布式服务注册和发现](https://blog.51cto.com/tianshili/1758566)
